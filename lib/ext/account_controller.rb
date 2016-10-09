@@ -1,8 +1,10 @@
 class AccountController < ApplicationController
   def try_ssl_auth
+    logger.debug ">>> Trying ssl_auth... "
     session[:email] = request.env["SSL_CLIENT_S_DN_CN"]
     if session[:email].nil? and request.env['HTTP_SSL_CLIENT_S_DN']
-      tmp = request.env['HTTP_SSL_CLIENT_S_DN'].scan(/emailAddress=([\w\d\-\.]+@[\w\d\-\.]+\.[\w\d]+)\//).flatten
+      logger.debug ">>> try_ssl_auth: HTTP_SSL_CLIENT_S_DN = " + request.env['HTTP_SSL_CLIENT_S_DN']
+      tmp = request.env['HTTP_SSL_CLIENT_S_DN'].scan(/emailAddress=([\w\d\-\.]+@[\w\d\-\.]+\.[\w\d]+)/).flatten
       session[:email] = tmp.first
     end
     if session[:email]
